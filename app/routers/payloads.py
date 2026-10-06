@@ -15,12 +15,9 @@ router = APIRouter(prefix="/payloads", tags=["payloads"])
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=None)
 def _create_(
-    #list1: List[str] = Query(..., description="List 1 of strings to be processed"),
-    #list2: List[str] = Query(..., description="List 2 of strings to be processed")
     payload_data: PayloadCreate,
     db: Annotated[Session, Depends(get_db)]
 ) -> int:
-    #external_service.transform_payload(list1, list2)
     payload = Payload(text=external_service.transform_payload(payload_data.list1, payload_data.list2))
     print (f"Создан payload: {external_service.transform_payload(payload_data.list1, payload_data.list2)}")
     db.add(payload)
@@ -29,11 +26,12 @@ def _create_(
     
     return payload.id
 
-@router.get("/", response_model=PayloadOut)
+@router.get("/{payload_id}", response_model=PayloadOut)
 def get_payload(
+    payload_id: int,
     db: Annotated[Session, Depends(get_db)]
-) -> Payload:
-    payload = db.execute(select(Payload).order_by(Payload.id.desc())).scalars().first()
+) -> PayloadOut:
+    payload = db.execute(select(Payload).where(Payload.id == payload_id)).scalars().first()
 
     if payload is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="payload not found")

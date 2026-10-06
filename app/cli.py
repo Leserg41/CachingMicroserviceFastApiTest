@@ -86,7 +86,7 @@ def run_requests(settings: CliSettings, payload: PayloadCreate) -> list[dict[str
             created_response.raise_for_status()
             created_id = TypeAdapter(int).validate_python(created_response.json())
 
-            payload_response = client.get("payloads/")
+            payload_response = client.get(f"payloads/{created_id}")
             payload_response.raise_for_status()
             stored_payload = PayloadOut.model_validate(payload_response.json())
             results.append(

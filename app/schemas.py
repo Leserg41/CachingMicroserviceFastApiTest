@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, model_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, EmailStr, Field, model_validator
 from typing import List
 from fastapi import Query
 
@@ -8,8 +8,7 @@ from fastapi import Query
 class PayloadOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
-    text: str
+    output: str = Field(validation_alias=AliasChoices("text", "output"))
 
 
 class PayloadCreate(BaseModel):

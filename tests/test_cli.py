@@ -92,8 +92,7 @@ class CliSettingsTests(unittest.TestCase):
             client = client_factory.return_value.__enter__.return_value
             client.post.return_value.json.return_value = 7
             client.get.return_value.json.return_value = {
-                "id": 7,
-                "text": "a,b",
+                "output": "a,b",
             }
 
             results = run_requests(settings, payload)
@@ -101,7 +100,8 @@ class CliSettingsTests(unittest.TestCase):
         self.assertEqual(len(results), 2)
         self.assertEqual(client.post.call_count, 2)
         self.assertEqual(client.get.call_count, 2)
-        self.assertEqual(results[0]["payload"]["text"], "a,b")
+        client.get.assert_any_call("payloads/7")
+        self.assertEqual(results[0]["payload"]["output"], "a,b")
 
 
 if __name__ == "__main__":
