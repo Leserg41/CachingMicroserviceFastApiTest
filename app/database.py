@@ -1,9 +1,13 @@
+import os
+
 from fastapi import FastAPI, Depends
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
 # 1. Определение URL базы данных. Файл sql_app.db создастся автоматически в корне проекта.
-SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
+SQLALCHEMY_DATABASE_URL = os.environ.get(
+    "DATABASE_URL", "sqlite:///./sql_app.db"
+)
 
 # 2. Создание движка. Аргумент 'check_same_thread=False' обязателен для SQLite в FastAPI, 
 # так как FastAPI может обрабатывать запросы в нескольких потоках.

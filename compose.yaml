@@ -1,0 +1,14 @@
+services:
+  api:
+    build:
+      context: .
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    environment:
+      DATABASE_URL: sqlite:////data/sql_app.db
+    volumes:
+      - sqlite_data:/data
+    restart: unless-stopped
+
+volumes:
+  sqlite_data:
